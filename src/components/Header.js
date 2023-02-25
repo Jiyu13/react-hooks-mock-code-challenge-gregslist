@@ -1,7 +1,10 @@
 import React from "react";
 import Search from "./Search";
+import Sort from "./Sort";
 
-function Header( {onSearchChange} ) {
+
+
+function Header( {onSearchChange, onHandleSort} ) {
   return (
     <header>
       <h1>
@@ -11,6 +14,7 @@ function Header( {onSearchChange} ) {
         gregslist
       </h1>
       <Search onSearchChange={onSearchChange}/>
+      <Sort onHandleSort={onHandleSort}/>
     </header>
   );
 }

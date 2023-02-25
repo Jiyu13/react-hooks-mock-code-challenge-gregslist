@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
+import AddNewListing from "./AddNewListing";
 import Header from "./Header";
 import ListingsContainer from "./ListingsContainer";
+
+
 
 function App() {
 
   const [lists, setLists] = useState([])
   const [fav, setFav] = useState(false)
   const [searchInput, setSearchInput] = useState("")
+  const [isSort, setIsSort] = useState(false)
+  const [showForm, setShowForm] = useState(false)
 
 
   useEffect(() => {
@@ -22,18 +27,44 @@ function App() {
 
 
   function onDeleteListing(deletedList) {
-    const updatedListings = lists.filter(list => list.id != deletedList.id)
+    const updatedListings = lists.filter(list => list.id !== deletedList.id)
     setLists(updatedListings)
   }
 
-  const searchResults = lists.filter(list => {
+
+  function onHandleSort() {
+    setIsSort(isSort => !isSort)
+  }
+
+
+  function onShowForm() {
+    setShowForm(showForm => !showForm)
+  }
+
+  
+  function onAddNewListing(newObj) {
+    setLists([...lists, newObj])
+  }
+
+  
+  let searchResults = lists.filter(list => {
     return list.description.toLowerCase().includes(searchInput.toLowerCase())
   })
 
 
+  if (isSort) {
+    searchResults = searchResults.sort((a, b) => a.location.localeCompare(b.location))
+  }
+
   return (
     <div className="app">
-      <Header onSearchChange={onSearchChange}/>
+      <Header onSearchChange={onSearchChange} onHandleSort={onHandleSort}/>
+      
+      <div className="buttonContainer">
+        <button onClick={onShowForm}>{showForm ? "Hide Form" : "Add a Listing!"}</button>
+      </div>
+      {showForm ? <AddNewListing onAddNewListing={onAddNewListing}/> : null}
+
       <ListingsContainer lists={searchResults} fav={fav} setFav={setFav} onDeleteListing={onDeleteListing} />
     </div>
   );
